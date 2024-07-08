@@ -10,8 +10,10 @@ class DepartmentSerializer(serializers.ModelSerializer):
 
 
 class RoleSerializer(serializers.ModelSerializer):
-    employee = serializers.SlugRelatedField(slug_field='name', queryset=Employee.objects.all())
-
+    # employee = serializers.SlugRelatedField(slug_field='name', queryset=Employee.objects.all())
+    start_date = serializers.DateField(required=False)
+    # end_date = serializers.DateField(required=False)
+    
     class Meta:
         model = Role
         fields = ['name','employee', 'duties','start_date', 'end_date']
@@ -19,14 +21,16 @@ class RoleSerializer(serializers.ModelSerializer):
 
 class EmployeeSerializer(serializers.ModelSerializer):
     department = serializers.SlugRelatedField(slug_field='name', queryset=Department.objects.all())
-    company = serializers.SlugRelatedField(slug_field='name', queryset=Company.objects.all())
+    # company = serializers.SlugRelatedField(slug_field='name', queryset=Company.objects.all()[0])
     roles = RoleSerializer(many=True)
 
     def create(self, validated_data):
         roles_data = validated_data.pop('roles')
         employee = Employee.objects.create(**validated_data)
+        print(roles_data)
         for role_data in roles_data:
-            Role.objects.create(employee=employee, **role_data) 
+            role_data['employee'] = employee
+            Role.objects.create(**role_data) 
         return employee
     
     def update(self, instance, validated_data):

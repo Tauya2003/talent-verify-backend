@@ -34,10 +34,10 @@ class Employee(models.Model):
 
 class Role(models.Model):
     name = models.CharField(max_length=100)
-    employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name='roles')
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name='roles', null=True, blank=True)
     duties = models.TextField()
     start_date = models.DateField(auto_now_add=True, null=True, blank=True)
-    end_date = models.DateField(default=None, null=True, blank=True)
+    end_date = models.DateField( null=True, blank=True)
 
     def __str__(self):
         return self.name
