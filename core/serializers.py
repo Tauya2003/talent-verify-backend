@@ -10,23 +10,33 @@ class DepartmentSerializer(serializers.ModelSerializer):
 
 
 class RoleSerializer(serializers.ModelSerializer):
-    employee = serializers.SlugRelatedField(slug_field='name', queryset=Employee.objects.all())
-
+    # employee = serializers.SlugRelatedField(slug_field='name', queryset=Employee.objects.all())
+    start_date = serializers.DateField(required=False)
+    # end_date = serializers.DateField(required=False)
+    
     class Meta:
         model = Role
-        fields = ['name','employee', 'duties','start_date', 'end_date']
+        fields = ['id','name','employee', 'duties','current','start_date', 'end_date']
 
 
 class EmployeeSerializer(serializers.ModelSerializer):
     department = serializers.SlugRelatedField(slug_field='name', queryset=Department.objects.all())
-    company = serializers.SlugRelatedField(slug_field='name', queryset=Company.objects.all())
+    # company = serializers.SlugRelatedField(slug_field='name', queryset=Company.objects.all())
     roles = RoleSerializer(many=True)
+    
+    # check if the employee id is unique
+    def validate_employee_id(self, value):
+        if Employee.objects.filter(employee_id=value).exists():
+            raise serializers.ValidationError("Employee ID already exists")
+        return value
 
     def create(self, validated_data):
         roles_data = validated_data.pop('roles')
         employee = Employee.objects.create(**validated_data)
+        print(roles_data)
         for role_data in roles_data:
-            Role.objects.create(employee=employee, **role_data) 
+            role_data['employee'] = employee
+            Role.objects.create(**role_data) 
         return employee
     
     def update(self, instance, validated_data):
@@ -49,7 +59,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Employee
-        fields = ['name', 'employee_id', 'company','department', 'roles']
+        fields = ['id','name', 'employee_id', 'company','department','status', 'roles']
 
         
 
