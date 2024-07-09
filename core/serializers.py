@@ -16,13 +16,19 @@ class RoleSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Role
-        fields = ['name','employee', 'duties','start_date', 'end_date']
+        fields = ['id','name','employee', 'duties','current','start_date', 'end_date']
 
 
 class EmployeeSerializer(serializers.ModelSerializer):
     department = serializers.SlugRelatedField(slug_field='name', queryset=Department.objects.all())
-    # company = serializers.SlugRelatedField(slug_field='name', queryset=Company.objects.all()[0])
+    # company = serializers.SlugRelatedField(slug_field='name', queryset=Company.objects.all())
     roles = RoleSerializer(many=True)
+    
+    # check if the employee id is unique
+    def validate_employee_id(self, value):
+        if Employee.objects.filter(employee_id=value).exists():
+            raise serializers.ValidationError("Employee ID already exists")
+        return value
 
     def create(self, validated_data):
         roles_data = validated_data.pop('roles')
@@ -53,7 +59,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Employee
-        fields = ['name', 'employee_id', 'company','department', 'roles']
+        fields = ['id','name', 'employee_id', 'company','department','status', 'roles']
 
         
 
