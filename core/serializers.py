@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import *
 import datetime
+from .utils import save_file, get_file_type, process_file
 
 
 class DepartmentSerializer(serializers.ModelSerializer):
@@ -94,5 +95,24 @@ class CompanySerializer(serializers.ModelSerializer):
             'phone', 
             'email'
             ]
-
         
+        
+
+
+class FileUploadSerializer(serializers.Serializer):
+    file_path = serializers.FileField()
+        
+    def create(self, validated_data):
+        file = validated_data['file_path']
+        file_path = save_file(file)
+        
+        uploaded_file = UploadedFile.objects.create(
+            file_name=file.name,
+            file_type=get_file_type(file.name),
+            file_path=file_path,
+            )
+        
+        process_file(uploaded_file)
+        
+        return uploaded_file
+

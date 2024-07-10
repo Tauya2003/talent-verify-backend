@@ -94,3 +94,11 @@ class EmployeeCreate(CreateAPIView):
 class EmployeeDetail(RetrieveUpdateDestroyAPIView):
     queryset = Employee.objects.all()
     serializer_class = EmployeeSerializer
+    
+    
+class FileUpload(CreateAPIView): 
+    serializer_class = FileUploadSerializer
+    
+    def perform_create(self, serializer):
+        file = self.request.FILES['file']
+        serializer.save(file_path=file)

@@ -1,9 +1,10 @@
 from django.db import models
+from django.contrib.auth import get_user_model
 
 class Company(models.Model):
     name = models.CharField(max_length=100)
     registration_date = models.DateField()
-    registartion_number = models.CharField(max_length=20)
+    registration_number = models.CharField(max_length=20)
     address = models.TextField()
     contact_person = models.CharField(max_length=100)
     num_employees = models.IntegerField(default=0)
@@ -43,5 +44,14 @@ class Role(models.Model):
 
     def __str__(self):
         return self.name
+ 
+    
+User = get_user_model()
+
+class UploadedFile(models.Model):
+    file_name = models.CharField(max_length=100)
+    file_type = models.CharField(max_length=20)
+    file_path = models.FilePathField()
+    uploaded_at = models.DateTimeField(auto_now_add=True)
     
   

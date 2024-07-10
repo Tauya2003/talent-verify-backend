@@ -21,4 +21,7 @@ urlpatterns = [
     path('employees/', views.EmployeeList.as_view(), name='employee-view-list'),
     path('employees/new/', views.EmployeeCreate.as_view(), name='employee-create'),
     path('employees/<int:pk>/', views.EmployeeDetail.as_view(), name='employee-detail'),
+    
+    # upload file
+    path('upload/', views.FileUpload.as_view(), name='file-upload')
 ]
