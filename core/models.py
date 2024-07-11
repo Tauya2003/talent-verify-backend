@@ -24,7 +24,7 @@ class Department(models.Model):
     
 class Employee(models.Model):
     name = models.CharField(max_length=100)
-    employee_id = models.CharField(max_length=20)
+    employee_id = models.CharField(max_length=20, null=True, blank=True)
     department = models.ForeignKey(Department, on_delete=models.CASCADE, related_name='employees')
     company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='employees')
     status = models.BooleanField(default=True)

@@ -88,7 +88,7 @@ class CompanySerializer(serializers.ModelSerializer):
         fields = [
             'name',
             'registration_date', 
-            'registartion_number',
+            'registration_number',
             'address', 'contact_person', 
             'departments',
             "num_employees", 
