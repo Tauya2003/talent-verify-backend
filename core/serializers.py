@@ -1,7 +1,6 @@
 from rest_framework import serializers
 from .models import *
 import datetime
-from .utils import save_file, get_file_type, process_file
 
 
 class DepartmentSerializer(serializers.ModelSerializer):

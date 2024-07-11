@@ -99,14 +99,14 @@ class EmployeeCreate(CreateAPIView):
 class EmployeeDetail(RetrieveUpdateDestroyAPIView):
     queryset = Employee.objects.all()
     serializer_class = EmployeeSerializer
-    
-    
-class FileUpload(APIView): 
+ 
+                       
+class FileUpload(APIView):
     serializer_class = FileUploadSerializer
     parser_classes = (MultiPartParser, FormParser)
-    
+
     def post(self, request):
-        try: 
+        try:
             data = request.FILES
             serializer = self.serializer_class(data=data)
             if not serializer.is_valid():
@@ -114,33 +114,45 @@ class FileUpload(APIView):
                     "status": False,
                     "message": "Invalid file",
                 }, status=status.HTTP_400_BAD_REQUEST)
-            exel_file = data.get('file')
-            df = pd.read_excel(exel_file, sheet_name=0)
+            file = data.get('file')
+            file_extension =  file.name.split('.')[-1].lower()
+            
+            if file_extension == 'xlsx':
+                df = pd.read_excel(file, sheet_name=0)
+            elif file_extension == 'csv':
+                df = pd.read_csv(file)
+            else:
+                return Response({
+                    "status": False,
+                    "message": "Unsupported file format",
+                }, status=status.HTTP_400_BAD_REQUEST)
+                
             employees = []
             for index, row in df.iterrows():
                 name = row['Name']
-                employee_id = row['Employee ID']  
+                employee_id = row['Employee ID']
                 department = row['Department']
                 company = row['Company']
-                employee = Employee.objects.filter(employee_id=employee_id)
-                if employee.exists():
-                    continue
-                else: 
-                    employee = Employee(
-                        name=name,
-                        employee_id=employee_id,
-                        department=Department.objects.get(name=department),
-                        company=Company.objects.get(name=company)
-                    )
-                    employees.append(employee)
-            Employee.objects.bulk_create(employees)
+                employee, created = Employee.objects.get_or_create(
+                    employee_id=employee_id,
+                    defaults={
+                        'name': name,
+                        'department': Department.objects.get(name=department),
+                        'company': Company.objects.get(name=company)
+                    }
+                )
+                if not created:
+                    employee.name = name
+                    employee.department = Department.objects.get(name=department)
+                    employee.company = Company.objects.get(name=company)
+                    employee.save()
             return Response({
                 "status": True,
-                "message": "Employees added successfull",
+                "message": "Employees updated successfully",
             }, status=status.HTTP_201_CREATED)
-                
         except Exception as e:
             return Response({
                 "status": False,
                 "message": str(e),
-            }, status=status.HTTP_400_BAD_REQUEST)
+            }, status=status.HTTP_400_BAD_REQUEST)            
+            
