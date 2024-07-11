@@ -100,19 +100,7 @@ class CompanySerializer(serializers.ModelSerializer):
 
 
 class FileUploadSerializer(serializers.Serializer):
-    file_path = serializers.FileField()
+    file = serializers.FileField()
         
-    def create(self, validated_data):
-        file = validated_data['file_path']
-        file_path = save_file(file)
-        
-        uploaded_file = UploadedFile.objects.create(
-            file_name=file.name,
-            file_type=get_file_type(file.name),
-            file_path=file_path,
-            )
-        
-        process_file(uploaded_file)
-        
-        return uploaded_file
+    
 
