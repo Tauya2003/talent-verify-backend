@@ -6,6 +6,11 @@ from rest_framework import status
 from rest_framework.parsers import MultiPartParser, FormParser
 import pandas as pd
 
+from django.http import HttpResponse
+from django.conf import settings
+import os
+
+
 from .models import *
 from .serializers import *
 
@@ -156,3 +161,20 @@ class FileUpload(APIView):
                 "message": str(e),
             }, status=status.HTTP_400_BAD_REQUEST)            
             
+            
+            
+# Download Sample files
+            
+def download_sample_excel(request):
+    file_path = os.path.join(settings.BASE_DIR, settings.SAMPLE_EXCEL_FILE)
+    with open(file_path, 'rb') as file:
+        response = HttpResponse(file, content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = 'attachment; filename="sample.xlsx"'
+        return response
+
+def download_sample_csv(request):
+    file_path = os.path.join(settings.BASE_DIR, settings.SAMPLE_CSV_FILE)
+    with open(file_path, 'r') as file:
+        response = HttpResponse(file, content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="sample.csv"'
+        return response

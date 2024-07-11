@@ -23,5 +23,9 @@ urlpatterns = [
     path('employees/<int:pk>/', views.EmployeeDetail.as_view(), name='employee-detail'),
     
     # upload file
-    path('upload/', views.FileUpload.as_view(), name='file-upload')
+    path('upload/', views.FileUpload.as_view(), name='file-upload'),
+    
+
+    path('download/sample-excel/', views.download_sample_excel, name='download_sample_excel'),
+    path('download/sample-csv/', views.download_sample_csv, name='download_sample_csv')
 ]
