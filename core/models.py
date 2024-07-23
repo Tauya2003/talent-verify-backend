@@ -3,12 +3,12 @@ from django.db import models
 class Company(models.Model):
     name = models.CharField(max_length=100)
     registration_date = models.DateField()
-    registration_number = models.CharField(max_length=20)
+    registration_number = models.CharField(max_length=20, unique=True)
     address = models.TextField()
     contact_person = models.CharField(max_length=100)
     num_employees = models.IntegerField(default=0)
     phone = models.CharField(max_length=20)
-    email = models.EmailField()
+    email = models.EmailField(unique=True)
 
     def __str__(self):
         return self.name 
