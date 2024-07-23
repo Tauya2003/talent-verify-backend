@@ -1,4 +1,5 @@
 import os
+import django_heroku
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -13,7 +14,7 @@ from datetime import timedelta
 SECRET_KEY = 'django-insecure-%erwx&j20pxx^z-x8ie^84xix+b4*_p=08)98-(c#2o6^e-)6c'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
@@ -166,6 +167,8 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
@@ -180,3 +183,7 @@ SAMPLE_EXCEL_FILE = 'core/samples/sample.xlsx'
 
 # Sample CSV file path
 SAMPLE_CSV_FILE = 'core/samples/sample.csv'
+
+
+# Activate Django Heroku
+django_heroku.settings(locals())
