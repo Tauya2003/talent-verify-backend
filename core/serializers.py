@@ -4,7 +4,7 @@ import datetime
 
 
 class DepartmentSerializer(serializers.ModelSerializer):
-    company = serializers.SlugRelatedField(slug_field='name', queryset=Company.objects.all())
+    company = serializers.SlugRelatedField(slug_field='registration_number', queryset=Company.objects.all())
     class Meta:
         model = Department
         fields = ['name','company']
@@ -20,7 +20,7 @@ class RoleSerializer(serializers.ModelSerializer):
 
 class EmployeeSerializer(serializers.ModelSerializer):
     department = serializers.SlugRelatedField(slug_field='name', queryset=Department.objects.all())
-    company = serializers.SlugRelatedField(slug_field='name', queryset=Company.objects.all())
+    company = serializers.SlugRelatedField(slug_field='registration_number', queryset=Company.objects.all())
     roles = RoleSerializer(many=True)
     
     # check if the employee id is unique
